@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "353767324213",
+    "project_id": "contest-app-31af5",
+    "storage_bucket": "contest-app-31af5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353767324213:android:0d8471d08b34d906a64f7c",
+        "android_client_info": {
+          "package_name": "com.flutter_grammer.contest_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "353767324213-rludtrbr564bu5tsg8e8hflf10fvgtrj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApUyLdZIPyuamOgAJldHN40hqEeywXSrk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "353767324213-rludtrbr564bu5tsg8e8hflf10fvgtrj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
