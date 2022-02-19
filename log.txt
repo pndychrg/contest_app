@@ -1,0 +1,4 @@
+.LOG
+12:16 AM 2/20/2022
+
+solve the issue of open link not working
