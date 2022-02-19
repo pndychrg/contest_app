@@ -1,6 +1,5 @@
 import 'dart:ffi';
 import 'package:contest_app/models/user_data.dart';
-import 'package:contest_app/services/api_connect.dart';
 import 'package:contest_app/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

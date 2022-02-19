@@ -9,7 +9,6 @@ import 'package:contest_app/shared/drawer_navigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:contest_app/services/api_connect.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -21,21 +20,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   //instance of authentication service
   final AuthService _auth = AuthService();
-
-  getSitesList() async {
-    //getting sites list from api
-    ContestSites _api = ContestSites();
-    var list = await _api.getSitesList();
-    return list;
-  }
-
-  var list;
-  @override
-  void initState() {
-    super.initState();
-    getSitesList();
-    // print(list);
-  }
 
   @override
   Widget build(BuildContext context) {
