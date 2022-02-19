@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contest_app/models/user_data.dart';
 import 'package:contest_app/screens/home/saved_contest.dart';
@@ -8,6 +10,7 @@ import 'package:contest_app/shared/constants.dart';
 import 'package:contest_app/shared/drawer_navigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -20,6 +23,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   //instance of authentication service
   final AuthService _auth = AuthService();
+  List contestSites = [];
+  Future<void> _getSitesList() async {
+    var url = "https://kontests.net/api/v1/sites";
+    final response = await http.get(Uri.parse(url));
+    final data = json.decode(response.body);
+
+    setState(() {
+      contestSites = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +43,7 @@ class _HomeState extends State<Home> {
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
+          drawerEnableOpenDragGesture: false,
           appBar: AppBar(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
@@ -38,6 +52,14 @@ class _HomeState extends State<Home> {
             ),
             title: Text("ContestAPP | Home"),
             elevation: 0.0,
+            leading: Builder(
+                builder: (context) => IconButton(
+                      icon: Icon(Icons.menu),
+                      onPressed: () {
+                        _getSitesList();
+                        Scaffold.of(context).openDrawer();
+                      },
+                    )),
             actions: <Widget>[
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -89,7 +111,9 @@ class _HomeState extends State<Home> {
               SavedContest(),
             ],
           ),
-          drawer: DrawerNavigation(),
+          drawer: DrawerNavigation(
+            sitesList: contestSites,
+          ),
         ),
       ),
     );
