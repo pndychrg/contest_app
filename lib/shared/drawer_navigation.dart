@@ -90,6 +90,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                 return SiteListCard(
                   sitesList: sitesList,
                   index: index,
+                  user: user,
                 );
               },
             ),
@@ -102,10 +103,12 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
 
 class SiteListCard extends StatelessWidget {
   final int index;
+  final UserSnapshotData? user;
   const SiteListCard({
     Key? key,
     required this.sitesList,
     required this.index,
+    required this.user,
   }) : super(key: key);
 
   final List sitesList;
@@ -135,7 +138,9 @@ class SiteListCard extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: ((context) => WebsiteScreen(
-                                siteListData: sitesList[index]))));
+                                  siteListData: sitesList[index],
+                                  user: user,
+                                ))));
                   },
                 ),
               ],

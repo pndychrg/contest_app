@@ -1,12 +1,19 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contest_app/models/user_data.dart';
+import 'package:contest_app/models/website.dart';
+import 'package:contest_app/services/database_service.dart';
 import 'package:contest_app/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class WebsiteScreen extends StatefulWidget {
   final siteListData;
-  const WebsiteScreen({Key? key, required this.siteListData}) : super(key: key);
+  final UserSnapshotData? user;
+  const WebsiteScreen(
+      {Key? key, required this.siteListData, required this.user})
+      : super(key: key);
 
   @override
   _WebsiteScreenState createState() => _WebsiteScreenState();
@@ -23,6 +30,42 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     setState(() {
       contestDescription = data;
     });
+  }
+
+  Map<String, dynamic> _mapFromWebsiteList(List? website) {
+    if (website!.isEmpty == true) {
+      return {};
+    } else {
+      return {
+        'name': website[0],
+        'underscore_name': website[1],
+        'website_url': website[2]
+      };
+    }
+  }
+
+  Future<void> _updateContestList() async {
+    //getting everything for convinience
+    var user = widget.user;
+    var userName = user?.name;
+    var userUid = user?.uid;
+    var currentWebsiteList = widget.siteListData;
+    //setting up a instance of firebase
+    DatabaseService _databaseService = DatabaseService(uid: userUid);
+    //getting data from database as a map
+    dynamic userData =
+        await FirebaseFirestore.instance.collection("users").doc(userUid).get();
+    userData = userData.data();
+
+    var userWebsiteList = userData['websites_list'];
+
+    //mapping the current webiste list data into a map
+    var mapCurrent = _mapFromWebsiteList(currentWebsiteList);
+
+    userWebsiteList.add(mapCurrent);
+
+    //updating the websiteList in Database
+    await _databaseService.updateUserData(userName, userWebsiteList);
   }
 
   @override
@@ -45,10 +88,11 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
           IconButton(
             color: _bookmarkButton ? Colors.purple : Colors.white,
             icon: Icon(Icons.bookmark),
-            onPressed: () {
+            onPressed: () async {
               setState(() {
                 _bookmarkButton = !_bookmarkButton;
               });
+              _updateContestList();
             },
           ),
         ],
