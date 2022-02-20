@@ -10,14 +10,21 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('users');
 
   //Updating User Data
-  Future updateUserData(String name) async {
-    return await userCollection.doc(uid).set({'name': name});
+  Future updateUserData(String? name, List<dynamic>? websites_list) async {
+    return await userCollection.doc(uid).set({
+      'name': name,
+      'websites_list': websites_list,
+    });
   }
 
   // user Data from snapshot
   UserSnapshotData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     dynamic snapshot_data = snapshot.data();
-    return UserSnapshotData(uid: uid, name: snapshot_data['name']);
+    return UserSnapshotData(
+      uid: uid,
+      name: snapshot_data['name'],
+      websitesList: snapshot_data['websites_list'],
+    );
   }
 
   //get user doc stream
