@@ -1,3 +1,5 @@
+import 'package:contest_app/main.dart';
+import 'package:contest_app/services/auth.dart';
 import 'package:contest_app/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,6 +18,9 @@ class _SignInState extends State<SignIn> {
   //setting up form variables
   String email = '';
   String password = '';
+  String error = '';
+  //creating instance of authentication service
+  AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -105,15 +110,25 @@ class _SignInState extends State<SignIn> {
                           ),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              print(email);
-                              print(password);
-                            } else {
-                              print("Not valid");
+                              dynamic result =
+                                  await _auth.signInEmailPass(email, password);
+                              if (result == null) {
+                                setState(() {
+                                  error = "Bad Credentials";
+                                });
+                              } else {
+                                Navigator.pushReplacement(context,
+                                    MaterialPageRoute(builder: (_) => MyApp()));
+                              }
                             }
                           },
                           child: Text(" Sign In "),
                         ),
-                      )
+                      ),
+                      Text(
+                        error,
+                        style: TextStyle(color: Colors.red),
+                      ),
                     ],
                   ),
                 ),
