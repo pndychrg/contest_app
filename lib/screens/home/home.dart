@@ -112,8 +112,8 @@ class _HomeState extends State<Home> {
             ],
           ),
           drawer: DrawerNavigation(
-            sitesList: contestSites,
-          ),
+              // sitesList: contestSites,
+              ),
         ),
       ),
     );
