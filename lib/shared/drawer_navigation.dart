@@ -58,7 +58,6 @@ class DrawerNavigation extends StatelessWidget {
           ),
           //List of All Websites
           Expanded(
-            flex: 2,
             child: ListView.builder(
               itemCount: sitesList.length,
               itemBuilder: (BuildContext context, int index) {
@@ -93,53 +92,24 @@ class SiteListCard extends StatelessWidget {
         padding: EdgeInsets.all(8),
         child: Column(
           children: <Widget>[
-            Text(
-              sitesList[index][0],
-              style: GoogleFonts.lato(
-                fontSize: 24,
-                letterSpacing: 2,
-              ),
-            ),
             Row(
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.white),
-                  onPressed: () async {
-                    var url = sitesList[index][2];
-                    print(url);
-                    await launch(url);
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.link,
-                        color: Colors.black,
-                      ),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      Text(
-                        "Open Site",
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
+                Text(
+                  sitesList[index][0],
+                  style: GoogleFonts.lato(
+                    fontSize: 24,
+                    letterSpacing: 2,
                   ),
                 ),
-                SizedBox(
-                  width: 5,
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: kLightBlue),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.link_rounded),
                   onPressed: () {},
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.link, color: Colors.black),
-                      Text("Contests Page",
-                          style: TextStyle(color: Colors.black)),
-                    ],
-                  ),
                 ),
               ],
+            ),
+            SizedBox(
+              height: 7,
             ),
             // Text(sitesList[index][2]),
           ],
