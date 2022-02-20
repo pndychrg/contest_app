@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'package:contest_app/models/user_data.dart';
+import 'package:contest_app/screens/website_screen/website_screen.dart';
 import 'package:contest_app/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -104,7 +105,13 @@ class SiteListCard extends StatelessWidget {
                 Spacer(),
                 IconButton(
                   icon: Icon(Icons.link_rounded),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => WebsiteScreen(
+                                siteListData: sitesList[index]))));
+                  },
                 ),
               ],
             ),
