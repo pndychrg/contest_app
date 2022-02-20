@@ -27,8 +27,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
     var url = "https://kontests.net/api/v1/sites";
     final response = await http.get(Uri.parse(url));
     final data = json.decode(response.body);
-    print("Function has ran");
-    print(data);
+
     setState(() {
       sitesList = data;
     });
@@ -37,7 +36,6 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
   @override
   void initState() {
     super.initState();
-    print("initstate ran");
     WidgetsBinding.instance?.addPostFrameCallback((_) => _getSitesList());
   }
 
