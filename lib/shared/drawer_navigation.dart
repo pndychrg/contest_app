@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'package:contest_app/models/user_data.dart';
 import 'package:contest_app/screens/website_screen/website_screen.dart';
@@ -6,14 +7,40 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
-class DrawerNavigation extends StatelessWidget {
-  final List sitesList;
-  // final List sitesList = siteList;
+class DrawerNavigation extends StatefulWidget {
   DrawerNavigation({
     Key? key,
-    required this.sitesList,
+    // required this.sitesList,
   }) : super(key: key);
+
+  @override
+  State<DrawerNavigation> createState() => _DrawerNavigationState();
+}
+
+class _DrawerNavigationState extends State<DrawerNavigation> {
+  // final List sitesList;
+  List sitesList = [];
+
+  Future<void> _getSitesList() async {
+    var url = "https://kontests.net/api/v1/sites";
+    final response = await http.get(Uri.parse(url));
+    final data = json.decode(response.body);
+    print("Function has ran");
+    print(data);
+    setState(() {
+      sitesList = data;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("initstate ran");
+    WidgetsBinding.instance?.addPostFrameCallback((_) => _getSitesList());
+  }
+
   @override
   Widget build(BuildContext context) {
     //Getting user data from stream
