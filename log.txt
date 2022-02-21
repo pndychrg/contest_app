@@ -2,3 +2,8 @@
 12:16 AM 2/20/2022
 
 solve the issue of open link not working
+
+10:51 AM 2/21/2022
+
+use flutter_advanced_drawer: ^1.3.0 this as
+drawer for better ui look

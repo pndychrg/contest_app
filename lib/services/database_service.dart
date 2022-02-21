@@ -31,6 +31,12 @@ class DatabaseService {
   Stream<UserSnapshotData> get user_data {
     return userCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
-  //getting user Data
 
+  //getting user Data as a Map
+  Future getUserDataMap() async {
+    dynamic userData =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    userData = userData.data();
+    return userData;
+  }
 }
