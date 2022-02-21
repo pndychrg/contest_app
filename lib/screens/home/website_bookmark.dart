@@ -51,18 +51,20 @@ class _WebsiteBookmarkState extends State<WebsiteBookmark> {
               SizedBox(
                 width: 10,
               ),
-              Text(user?.websitesList[index]['name']),
+              Text(user?.websitesList[index]['name'] ?? "No Name"),
               Spacer(),
               IconButton(
                 onPressed: () {
-                  print(user?.websitesList[index]);
                   //changing the websiteList Map into a list
                   var siteListData = [];
                   user?.websitesList[index]
                       .forEach((key, value) => siteListData.add(value));
-                  print(siteListData);
+
                   siteListData = siteListData.reversed.toList();
-                  print(siteListData);
+
+                  //removing the "true" before sending the data
+                  siteListData.remove(true);
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(

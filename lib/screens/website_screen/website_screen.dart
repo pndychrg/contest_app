@@ -7,6 +7,7 @@ import 'package:contest_app/services/database_service.dart';
 import 'package:contest_app/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class WebsiteScreen extends StatefulWidget {
   final siteListData;
@@ -32,6 +33,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     });
   }
 
+  //mapping the websiteListData to a Map of String,dynamic
   Map<String, dynamic> _mapFromWebsiteList(List? website) {
     if (website!.isEmpty == true) {
       return {};
@@ -39,7 +41,8 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
       return {
         'name': website[0],
         'underscore_name': website[1],
-        'website_url': website[2]
+        'website_url': website[2],
+        'saved': true,
       };
     }
   }
@@ -77,8 +80,33 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
   // UI required Booleans
   bool _bookmarkButton = false;
 
+  _checkIfAlreadySaved() {
+    bool _returnVal = false;
+    var websiteListFromWidget = widget.siteListData;
+    var websiteListFromUser = widget.user?.websitesList;
+    // this function is iterating the userWebsiteList from the firebase and checking
+    // if it contains a Map with name same as name from websiteList given from widget
+    //returning true if it contains it or else returning false.
+    websiteListFromUser?.forEach((websiteMap) {
+      if (websiteMap['name'] == websiteListFromWidget[0]) {
+        // print('found');
+        _returnVal = true;
+      }
+    });
+    return _returnVal;
+  }
+
   @override
   Widget build(BuildContext context) {
+    //this function will save the value of boolean in variable
+    var checkIfAlreadySaved = _checkIfAlreadySaved();
+    // print(_checkIfAlreadySaved().toString());
+    // _checkIfAlreadySaved();
+    if (checkIfAlreadySaved == true) {
+      setState(() {
+        _bookmarkButton = true;
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -89,10 +117,15 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
             color: _bookmarkButton ? Colors.purple : Colors.white,
             icon: Icon(Icons.bookmark),
             onPressed: () async {
-              setState(() {
-                _bookmarkButton = !_bookmarkButton;
-              });
-              _updateContestList();
+              // _updateContestList();
+              if (_bookmarkButton == false) {
+                _updateContestList();
+                setState(() {
+                  _bookmarkButton = !_bookmarkButton;
+                });
+              } else {
+                print("Already saved");
+              }
             },
           ),
         ],
