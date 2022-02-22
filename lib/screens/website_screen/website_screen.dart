@@ -88,8 +88,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     var userWebsiteList = userData['websites_list'];
     //mapping the current webiste list data into a map
     var mapCurrent = _mapFromWebsiteList(currentWebsiteList);
-    print(mapCurrent);
-    print(userWebsiteList);
+
     // as the website is already in the data we have to remove it
     //writing a loop to remove data
     userWebsiteList.forEach((websiteMap) {
