@@ -47,12 +47,15 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     }
   }
 
-  Future<void> _updateContestListAdd() async {
+  //creating a function to add bookmark
+  Future<void> _updateWebsiteListAdd() async {
     //getting everything for convinience
     var user = widget.user;
     var userName = user?.name;
     var userUid = user?.uid;
+    var userContestList = user?.contestList;
     var currentWebsiteList = widget.siteListData;
+
     //setting up a instance of firebase
     DatabaseService _databaseService = DatabaseService(uid: userUid);
     //getting data from database as a map
@@ -68,15 +71,18 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     userWebsiteList.add(mapCurrent);
 
     //updating the websiteList in Database
-    await _databaseService.updateUserData(userName, userWebsiteList);
+    await _databaseService.updateUserData(
+        userName, userWebsiteList, userContestList);
   }
 
   //creating a function to remove the bookmark
-  Future<void> _updateContestListDel() async {
+  Future<void> _updateWebsiteListDel() async {
     //getting everything for convinience
     var user = widget.user;
     var userName = user?.name;
     var userUid = user?.uid;
+    var userContestList = user?.contestList;
+
     var currentWebsiteList = widget.siteListData;
     //setting up a instance of firebase
     DatabaseService _databaseService = DatabaseService(uid: userUid);
@@ -102,7 +108,29 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     //here we are deleting our current map
     userWebsiteList.remove(mapCurrent);
     //here we are updating the data in firebase
-    await _databaseService.updateUserData(userName, userWebsiteList);
+    await _databaseService.updateUserData(
+        userName, userWebsiteList, userContestList);
+  }
+
+  //creating a function to add contest bookmark
+  Future<void> _updateContestList(dynamic ContestMap) async {
+    //getting everything for convinience
+    var user = widget.user;
+    var userName = user?.name;
+    var userUid = user?.uid;
+    var userContestList = user?.contestList;
+    var userWebsiteList = user?.websitesList;
+    print(userContestList);
+    //setting up a instance of firebase
+    DatabaseService _databaseService = DatabaseService(uid: userUid);
+
+    // as the data is already a map
+    //we will add it directly
+    userContestList?.add(ContestMap);
+
+    //let's push this into the data
+    await _databaseService.updateUserData(
+        userName, userWebsiteList, userContestList);
   }
 
   @override
@@ -113,6 +141,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
 
   // UI required Booleans
   bool _bookmarkButton = false;
+  bool _likeButton = false;
 
   _checkIfAlreadySaved() {
     bool _returnVal = false;
@@ -153,13 +182,13 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
             onPressed: () async {
               // _updateContestList();
               if (_bookmarkButton == false) {
-                await _updateContestListAdd();
+                await _updateWebsiteListAdd();
                 setState(() {
                   _bookmarkButton = !_bookmarkButton;
                 });
               } else {
                 //Now as it is already saved we have to remove it from saved.
-                await _updateContestListDel();
+                await _updateWebsiteListDel();
                 // print("Already saved");
                 setState(() {
                   _bookmarkButton = !_bookmarkButton;
@@ -199,6 +228,17 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                   ),
                   Text(
                     "Status: ${contestDescription[index]['status']}",
+                  ),
+                  OutlinedButton(
+                    onPressed: () async {
+                      _updateContestList(contestDescription[index]);
+                      setState(() {
+                        _likeButton = !_likeButton;
+                      });
+                    },
+                    child: Icon(
+                      Icons.favorite,
+                    ),
                   ),
                 ],
               ),

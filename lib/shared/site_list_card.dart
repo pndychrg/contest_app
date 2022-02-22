@@ -5,16 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SiteListCard extends StatelessWidget {
-  final int index;
   final UserSnapshotData? user;
   const SiteListCard({
     Key? key,
-    required this.sitesList,
-    required this.index,
+    required this.sitesListData,
     required this.user,
   }) : super(key: key);
 
-  final List sitesList;
+  final List sitesListData;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,7 @@ class SiteListCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  sitesList[index][0],
+                  sitesListData[0],
                   style: GoogleFonts.lato(
                     fontSize: 24,
                     letterSpacing: 2,
@@ -41,7 +39,7 @@ class SiteListCard extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: ((context) => WebsiteScreen(
-                                  siteListData: sitesList[index],
+                                  siteListData: sitesListData,
                                   user: user,
                                 ))));
                   },

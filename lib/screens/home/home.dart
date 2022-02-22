@@ -133,7 +133,9 @@ class HomeTabView extends StatelessWidget {
         WebsiteBookmark(
           uid: userSnapshotData?.uid,
         ),
-        SavedContest(),
+        SavedContest(
+          uid: userSnapshotData?.uid,
+        ),
       ],
     );
   }
