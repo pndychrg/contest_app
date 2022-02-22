@@ -47,7 +47,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     }
   }
 
-  Future<void> _updateContestList() async {
+  Future<void> _updateContestListAdd() async {
     //getting everything for convinience
     var user = widget.user;
     var userName = user?.name;
@@ -68,6 +68,41 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     userWebsiteList.add(mapCurrent);
 
     //updating the websiteList in Database
+    await _databaseService.updateUserData(userName, userWebsiteList);
+  }
+
+  //creating a function to remove the bookmark
+  Future<void> _updateContestListDel() async {
+    //getting everything for convinience
+    var user = widget.user;
+    var userName = user?.name;
+    var userUid = user?.uid;
+    var currentWebsiteList = widget.siteListData;
+    //setting up a instance of firebase
+    DatabaseService _databaseService = DatabaseService(uid: userUid);
+    //getting data from database as a map
+    dynamic userData =
+        await FirebaseFirestore.instance.collection("users").doc(userUid).get();
+    userData = userData.data();
+    //getting only the website list from the data
+    var userWebsiteList = userData['websites_list'];
+    //mapping the current webiste list data into a map
+    var mapCurrent = _mapFromWebsiteList(currentWebsiteList);
+    print(mapCurrent);
+    print(userWebsiteList);
+    // as the website is already in the data we have to remove it
+    //writing a loop to remove data
+    userWebsiteList.forEach((websiteMap) {
+      if (websiteMap['name'] == mapCurrent['name']) {
+        //direct removal is not happening cause of different map series
+        //so we are finding the map inside the data from firebase and if is found
+        //then we are saving it in our current map
+        mapCurrent = websiteMap;
+      }
+    });
+    //here we are deleting our current map
+    userWebsiteList.remove(mapCurrent);
+    //here we are updating the data in firebase
     await _databaseService.updateUserData(userName, userWebsiteList);
   }
 
@@ -100,8 +135,8 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
   Widget build(BuildContext context) {
     //this function will save the value of boolean in variable
     var checkIfAlreadySaved = _checkIfAlreadySaved();
-    // print(_checkIfAlreadySaved().toString());
-    // _checkIfAlreadySaved();
+    // this if statement will check if the page is already saved or not and then
+    //will color the Bookmarking icon on that condition
     if (checkIfAlreadySaved == true) {
       setState(() {
         _bookmarkButton = true;
@@ -119,12 +154,17 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
             onPressed: () async {
               // _updateContestList();
               if (_bookmarkButton == false) {
-                _updateContestList();
+                await _updateContestListAdd();
                 setState(() {
                   _bookmarkButton = !_bookmarkButton;
                 });
               } else {
-                print("Already saved");
+                //Now as it is already saved we have to remove it from saved.
+                await _updateContestListDel();
+                // print("Already saved");
+                setState(() {
+                  _bookmarkButton = !_bookmarkButton;
+                });
               }
             },
           ),
