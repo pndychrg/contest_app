@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contest_app/models/user_data.dart';
 import 'package:contest_app/screens/home/saved_contest.dart';
-import 'package:contest_app/screens/home/view_contest.dart';
+import 'package:contest_app/screens/home/website_bookmark.dart';
 import 'package:contest_app/services/auth.dart';
 import 'package:contest_app/services/database_service.dart';
 import 'package:contest_app/shared/constants.dart';
@@ -37,6 +37,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserData?>(context);
+
     return StreamProvider<UserSnapshotData?>.value(
       initialData: null,
       value: DatabaseService(uid: user!.uid).user_data,
@@ -105,17 +106,35 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
-          body: TabBarView(
-            children: <Widget>[
-              ViewContest(),
-              SavedContest(),
-            ],
-          ),
+          body: HomeTabView(user: user),
           drawer: DrawerNavigation(
               // sitesList: contestSites,
               ),
         ),
       ),
+    );
+  }
+}
+
+class HomeTabView extends StatelessWidget {
+  const HomeTabView({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
+
+  final UserData? user;
+
+  @override
+  Widget build(BuildContext context) {
+    UserSnapshotData? userSnapshotData =
+        Provider.of<UserSnapshotData?>(context);
+    return TabBarView(
+      children: <Widget>[
+        WebsiteBookmark(
+          uid: userSnapshotData?.uid,
+        ),
+        SavedContest(),
+      ],
     );
   }
 }
