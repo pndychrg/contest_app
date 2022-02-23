@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contest_app/models/user_data.dart';
 import 'package:contest_app/models/website.dart';
+import 'package:contest_app/services/add_calendar.dart';
 import 'package:contest_app/services/database_service.dart';
 import 'package:contest_app/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WebsiteScreen extends StatefulWidget {
   final siteListData;
@@ -171,6 +173,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     return _returnVal;
   }
 
+  //snackbar for showing results
   SnackBar snackBar(String text) {
     return SnackBar(
       content: Text(text),
@@ -266,6 +269,39 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                       Icons.favorite_border,
                     ),
                   ),
+                  OutlinedButton(
+                    onPressed: () async {
+                      final url = contestDescription[index]['url'];
+                      // final url = 'https://www.google.co.in/';
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      }
+                    },
+                    child: Icon(Icons.link),
+                  ),
+                  OutlinedButton(
+                      onPressed: () {
+                        //getting all values together
+                        var title = contestDescription[index]['name'];
+                        var startDate = contestDescription[index]['start_time'];
+                        var endDate = contestDescription[index]['end_time'];
+                        //changing datatype of dates
+                        startDate = DateTime.parse(startDate);
+                        endDate = DateTime.parse(endDate);
+                        print(startDate);
+                        print(endDate);
+                        AddCalendar addCalendar = AddCalendar();
+                        addCalendar.addToCalendar(title, startDate, endDate);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.calendar_today),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Text("Add Event to Calendar"),
+                        ],
+                      )),
                 ],
               ),
             ),
