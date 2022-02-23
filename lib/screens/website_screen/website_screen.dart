@@ -113,24 +113,38 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
   }
 
   //creating a function to add contest bookmark
-  Future<void> _updateContestList(dynamic ContestMap) async {
+  dynamic _updateContestList(dynamic ContestMap) async {
     //getting everything for convinience
     var user = widget.user;
     var userName = user?.name;
     var userUid = user?.uid;
     var userContestList = user?.contestList;
     var userWebsiteList = user?.websitesList;
-    print(userContestList);
+
     //setting up a instance of firebase
     DatabaseService _databaseService = DatabaseService(uid: userUid);
-
+    bool alreadyFound = false;
     // as the data is already a map
     //we will add it directly
-    userContestList?.add(ContestMap);
-
-    //let's push this into the data
-    await _databaseService.updateUserData(
-        userName, userWebsiteList, userContestList);
+    //but before adding we will check if it is already saved
+    userContestList?.forEach((contest) {
+      if (contest['name'] == ContestMap['name']) {
+        alreadyFound = true;
+      }
+    });
+    // userContestList?.add(ContestMap);
+    if (alreadyFound == true) {
+      // print("Already Found == true");
+      return alreadyFound;
+    } else {
+      // print("Not Found");
+      //add data as it is not already found
+      userContestList?.add(ContestMap);
+      //let's push this into the data
+      await _databaseService.updateUserData(
+          userName, userWebsiteList, userContestList);
+      return alreadyFound;
+    }
   }
 
   @override
@@ -141,8 +155,6 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
 
   // UI required Booleans
   bool _bookmarkButton = false;
-  bool _likeButton = false;
-
   _checkIfAlreadySaved() {
     bool _returnVal = false;
     var websiteListFromWidget = widget.siteListData;
@@ -157,6 +169,14 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
       }
     });
     return _returnVal;
+  }
+
+  SnackBar snackBar(String text) {
+    return SnackBar(
+      content: Text(text),
+      duration: Duration(seconds: 1),
+      dismissDirection: DismissDirection.horizontal,
+    );
   }
 
   @override
@@ -231,13 +251,19 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                   ),
                   OutlinedButton(
                     onPressed: () async {
-                      _updateContestList(contestDescription[index]);
-                      setState(() {
-                        _likeButton = !_likeButton;
-                      });
+                      var contestUpdate =
+                          await _updateContestList(contestDescription[index]);
+                      if (contestUpdate == true) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(snackBar("Not Updated"));
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(snackBar("Added Successfully"));
+                      }
+                      // print(contestUpdate == true);
                     },
                     child: Icon(
-                      Icons.favorite,
+                      Icons.favorite_border,
                     ),
                   ),
                 ],
