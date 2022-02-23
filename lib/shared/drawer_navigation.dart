@@ -89,8 +89,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
               itemCount: sitesList.length,
               itemBuilder: (BuildContext context, int index) {
                 return SiteListCard(
-                  sitesList: sitesList,
-                  index: index,
+                  sitesListData: sitesList[index],
                   user: user,
                 );
               },

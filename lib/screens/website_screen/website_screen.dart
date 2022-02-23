@@ -47,12 +47,15 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     }
   }
 
-  Future<void> _updateContestListAdd() async {
+  //creating a function to add bookmark
+  Future<void> _updateWebsiteListAdd() async {
     //getting everything for convinience
     var user = widget.user;
     var userName = user?.name;
     var userUid = user?.uid;
+    var userContestList = user?.contestList;
     var currentWebsiteList = widget.siteListData;
+
     //setting up a instance of firebase
     DatabaseService _databaseService = DatabaseService(uid: userUid);
     //getting data from database as a map
@@ -68,15 +71,18 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     userWebsiteList.add(mapCurrent);
 
     //updating the websiteList in Database
-    await _databaseService.updateUserData(userName, userWebsiteList);
+    await _databaseService.updateUserData(
+        userName, userWebsiteList, userContestList);
   }
 
   //creating a function to remove the bookmark
-  Future<void> _updateContestListDel() async {
+  Future<void> _updateWebsiteListDel() async {
     //getting everything for convinience
     var user = widget.user;
     var userName = user?.name;
     var userUid = user?.uid;
+    var userContestList = user?.contestList;
+
     var currentWebsiteList = widget.siteListData;
     //setting up a instance of firebase
     DatabaseService _databaseService = DatabaseService(uid: userUid);
@@ -102,7 +108,43 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     //here we are deleting our current map
     userWebsiteList.remove(mapCurrent);
     //here we are updating the data in firebase
-    await _databaseService.updateUserData(userName, userWebsiteList);
+    await _databaseService.updateUserData(
+        userName, userWebsiteList, userContestList);
+  }
+
+  //creating a function to add contest bookmark
+  dynamic _updateContestList(dynamic ContestMap) async {
+    //getting everything for convinience
+    var user = widget.user;
+    var userName = user?.name;
+    var userUid = user?.uid;
+    var userContestList = user?.contestList;
+    var userWebsiteList = user?.websitesList;
+
+    //setting up a instance of firebase
+    DatabaseService _databaseService = DatabaseService(uid: userUid);
+    bool alreadyFound = false;
+    // as the data is already a map
+    //we will add it directly
+    //but before adding we will check if it is already saved
+    userContestList?.forEach((contest) {
+      if (contest['name'] == ContestMap['name']) {
+        alreadyFound = true;
+      }
+    });
+    // userContestList?.add(ContestMap);
+    if (alreadyFound == true) {
+      // print("Already Found == true");
+      return alreadyFound;
+    } else {
+      // print("Not Found");
+      //add data as it is not already found
+      userContestList?.add(ContestMap);
+      //let's push this into the data
+      await _databaseService.updateUserData(
+          userName, userWebsiteList, userContestList);
+      return alreadyFound;
+    }
   }
 
   @override
@@ -113,7 +155,6 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
 
   // UI required Booleans
   bool _bookmarkButton = false;
-
   _checkIfAlreadySaved() {
     bool _returnVal = false;
     var websiteListFromWidget = widget.siteListData;
@@ -128,6 +169,14 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
       }
     });
     return _returnVal;
+  }
+
+  SnackBar snackBar(String text) {
+    return SnackBar(
+      content: Text(text),
+      duration: Duration(seconds: 1),
+      dismissDirection: DismissDirection.horizontal,
+    );
   }
 
   @override
@@ -153,13 +202,13 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
             onPressed: () async {
               // _updateContestList();
               if (_bookmarkButton == false) {
-                await _updateContestListAdd();
+                await _updateWebsiteListAdd();
                 setState(() {
                   _bookmarkButton = !_bookmarkButton;
                 });
               } else {
                 //Now as it is already saved we have to remove it from saved.
-                await _updateContestListDel();
+                await _updateWebsiteListDel();
                 // print("Already saved");
                 setState(() {
                   _bookmarkButton = !_bookmarkButton;
@@ -199,6 +248,23 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                   ),
                   Text(
                     "Status: ${contestDescription[index]['status']}",
+                  ),
+                  OutlinedButton(
+                    onPressed: () async {
+                      var contestUpdate =
+                          await _updateContestList(contestDescription[index]);
+                      if (contestUpdate == true) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(snackBar("Not Updated"));
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(snackBar("Added Successfully"));
+                      }
+                      // print(contestUpdate == true);
+                    },
+                    child: Icon(
+                      Icons.favorite_border,
+                    ),
                   ),
                 ],
               ),
