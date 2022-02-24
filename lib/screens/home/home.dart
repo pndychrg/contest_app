@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contest_app/models/user_data.dart';
 import 'package:contest_app/screens/home/saved_contest.dart';
@@ -65,7 +64,7 @@ class _HomeState extends State<Home> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
-                  primary: kLightPink,
+                  primary: kpurple,
                 ),
                 onPressed: () async {
                   await _auth.signOut();
@@ -85,10 +84,10 @@ class _HomeState extends State<Home> {
             ],
             bottom: TabBar(
               indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(color: Color(0xDD613896), width: 2.0),
+                borderSide: BorderSide(color: Color(0xFFF76F02), width: 2.0),
                 insets: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 70.0),
               ),
-              labelColor: Colors.purple,
+              labelColor: Color(0xFF313416),
               unselectedLabelColor: Colors.white,
               tabs: [
                 Tab(

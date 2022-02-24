@@ -4,7 +4,9 @@ import 'package:contest_app/services/database_service.dart';
 import 'package:contest_app/shared/constants.dart';
 import 'package:contest_app/shared/site_list_card.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WebsiteBookmark extends StatefulWidget {
   // final UserSnapshotData? user;
@@ -46,41 +48,128 @@ class _WebsiteBookmarkState extends State<WebsiteBookmark> {
       itemCount: user?.websitesList.length,
       itemBuilder: (BuildContext context, int index) {
         return Card(
-          child: Row(
-            children: [
-              SizedBox(
-                width: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          margin: EdgeInsets.all(8),
+          elevation: 10,
+          color: Color(0xFFF5F4F9),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                // color: Color(0xFFF76F02),
+                color: kpurple,
+                width: 2,
               ),
-              Text(user?.websitesList[index]['name'] ?? "No Name"),
-              Spacer(),
-              IconButton(
-                onPressed: () {
-                  //changing the websiteList Map into a list
-                  var siteListData = [];
-                  user?.websitesList[index]
-                      .forEach((key, value) => siteListData.add(value));
-
-                  siteListData = siteListData.reversed.toList();
-
-                  //removing the "true" before sending the data
-                  siteListData.remove(true);
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => WebsiteScreen(
-                                siteListData: siteListData,
-                                user: user,
-                              ))));
-                },
-                icon: Icon(
-                  Icons.link,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            padding: EdgeInsets.all(8),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 17,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      user?.websitesList[index]['name'] ?? "No Name",
+                      style: GoogleFonts.lato(
+                        fontSize: 27,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-            ],
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: <Widget>[
+                    // Spacer(),
+                    OutlinedButton(
+                      style: outlinedButtonStyle,
+                      onPressed: () {
+                        //changing the websiteList Map into a list
+                        var siteListData = [];
+                        user?.websitesList[index]
+                            .forEach((key, value) => siteListData.add(value));
+
+                        siteListData = siteListData.reversed.toList();
+
+                        //removing the "true" before sending the data
+                        siteListData.remove(true);
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => WebsiteScreen(
+                                      siteListData: siteListData,
+                                      user: user,
+                                    ))));
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            "Open Contests Page",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Icon(
+                            Icons.open_in_new,
+                            color: Color(0xFFF76F02),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    OutlinedButton(
+                      style: outlinedButtonStyle,
+                      onPressed: () async {
+                        final url = user?.websitesList[index]['website_url'];
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            "Open Website",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Icon(
+                            Icons.open_in_browser,
+                            color: Color(0xFFF76F02),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

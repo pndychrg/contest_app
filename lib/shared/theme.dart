@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 
 ThemeData ligthThemeData(BuildContext context) {
   return ThemeData.light().copyWith(
-    scaffoldBackgroundColor: kPrimary,
+    scaffoldBackgroundColor: Colors.white,
     appBarTheme: AppBarTheme().copyWith(
-      backgroundColor: kLightPink,
+      backgroundColor: kpurple,
     ),
   );
 }
