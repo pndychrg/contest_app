@@ -7,8 +7,9 @@ import 'package:contest_app/shared/site_list_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'package:http/http.dart' as http;
+import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
 class DrawerNavigation extends StatefulWidget {
   DrawerNavigation({
@@ -45,22 +46,18 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
     //Getting user data from stream
     UserSnapshotData? user = Provider.of<UserSnapshotData?>(context);
     return Drawer(
+      elevation: 0,
+      // backgroundColor: Colors.blueGrey,
+      backgroundColor: kpurple,
       child: Column(
         children: <Widget>[
           //DrawerHeader
           DrawerHeader(
-            decoration: BoxDecoration(
-              color: kLightPink,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
-            ),
             child: Row(
               children: <Widget>[
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: kLightPurple,
+                  backgroundColor: Color(0xFFF76F02),
                   child: Text(
                     user?.name[0] ?? "-",
                     style: GoogleFonts.roboto(
@@ -78,6 +75,7 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
                     fontWeight: FontWeight.w700,
                     fontSize: 30,
                     letterSpacing: 2,
+                    color: Colors.white,
                   ),
                 ),
               ],

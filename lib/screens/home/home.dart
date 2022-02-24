@@ -9,6 +9,7 @@ import 'package:contest_app/shared/constants.dart';
 import 'package:contest_app/shared/drawer_navigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -36,79 +37,103 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserData?>(context);
+    final _advancedDrawerController = AdvancedDrawerController();
+    void _handleMenuButtonPressed() {
+      // NOTICE: Manage Advanced Drawer state through the Controller.
+      _advancedDrawerController.value = AdvancedDrawerValue.visible();
+      _advancedDrawerController.showDrawer();
+    }
 
     return StreamProvider<UserSnapshotData?>.value(
       initialData: null,
       value: DatabaseService(uid: user!.uid).user_data,
       child: DefaultTabController(
         length: 2,
-        child: Scaffold(
-          drawerEnableOpenDragGesture: false,
-          appBar: AppBar(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(30),
-              ),
-            ),
-            title: Text("ContestAPP | Home"),
-            elevation: 0.0,
-            leading: Builder(
-                builder: (context) => IconButton(
-                      icon: Icon(Icons.menu),
-                      onPressed: () {
-                        _getSitesList();
-                        Scaffold.of(context).openDrawer();
-                      },
-                    )),
-            actions: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  primary: kpurple,
-                ),
-                onPressed: () async {
-                  await _auth.signOut();
-                },
-                child: Row(
-                  children: <Widget>[
-                    Icon(Icons.exit_to_app),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      "Sign Out",
-                    ),
-                  ],
-                ),
-              )
-            ],
-            bottom: TabBar(
-              indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(color: Color(0xFFF76F02), width: 2.0),
-                insets: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 70.0),
-              ),
-              labelColor: Color(0xFF313416),
-              unselectedLabelColor: Colors.white,
-              tabs: [
-                Tab(
-                  icon: Icon(
-                    Icons.bookmark,
-                  ),
-                  text: "Bookmarked Website",
-                ),
-                Tab(
-                  icon: Icon(
-                    Icons.favorite,
-                  ),
-                  text: "Saved Contests",
-                )
-              ],
+        child: AdvancedDrawer(
+          // backdropColor: Colors.blueGrey,
+          backdropColor: kpurple,
+          controller: _advancedDrawerController,
+          animationCurve: Curves.easeInOut,
+          animationDuration: const Duration(milliseconds: 300),
+          animateChildDecoration: true,
+          rtlOpening: false,
+          disabledGestures: false,
+          childDecoration: const BoxDecoration(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(16),
             ),
           ),
-          body: HomeTabView(user: user),
-          drawer: DrawerNavigation(
-              // sitesList: contestSites,
+          drawer: DrawerNavigation(),
+          child: Scaffold(
+            drawerEnableOpenDragGesture: false,
+            appBar: AppBar(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(30),
+                ),
               ),
+              title: Text("ContestAPP | Home"),
+              elevation: 0.0,
+              leading: IconButton(
+                onPressed: _handleMenuButtonPressed,
+                icon: ValueListenableBuilder<AdvancedDrawerValue>(
+                  valueListenable: _advancedDrawerController,
+                  builder: (_, value, __) {
+                    return AnimatedSwitcher(
+                      duration: Duration(milliseconds: 250),
+                      child: Icon(value.visible ? Icons.clear : Icons.menu),
+                      key: ValueKey<bool>(value.visible),
+                    );
+                  },
+                ),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    primary: kpurple,
+                  ),
+                  onPressed: () async {
+                    await _auth.signOut();
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.exit_to_app),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        "Sign Out",
+                      ),
+                    ],
+                  ),
+                )
+              ],
+              bottom: TabBar(
+                indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(color: Color(0xFFF76F02), width: 2.0),
+                  insets: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 70.0),
+                ),
+                labelColor: Colors.red,
+                unselectedLabelColor: Colors.white,
+                tabs: [
+                  Tab(
+                    icon: Icon(
+                      Icons.bookmark,
+                    ),
+                    text: "Bookmarked Website",
+                  ),
+                  Tab(
+                    icon: Icon(
+                      Icons.favorite,
+                    ),
+                    text: "Saved Contests",
+                  )
+                ],
+              ),
+            ),
+            body: HomeTabView(user: user),
+          ),
         ),
       ),
     );
