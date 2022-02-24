@@ -8,6 +8,7 @@ import 'package:contest_app/services/database_service.dart';
 import 'package:contest_app/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -193,120 +194,329 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
         _bookmarkButton = true;
       });
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.siteListData[0],
-        ),
-        actions: <Widget>[
-          IconButton(
-            color: _bookmarkButton ? Colors.purple : Colors.white,
-            icon: Icon(Icons.bookmark),
-            onPressed: () async {
-              // _updateContestList();
-              if (_bookmarkButton == false) {
-                await _updateWebsiteListAdd();
-                setState(() {
-                  _bookmarkButton = !_bookmarkButton;
-                });
-              } else {
-                //Now as it is already saved we have to remove it from saved.
-                await _updateWebsiteListDel();
-                // print("Already saved");
-                setState(() {
-                  _bookmarkButton = !_bookmarkButton;
-                });
-              }
-            },
-          ),
-        ],
-      ),
-      //main contest description views
-      body: ListView.builder(
-        itemCount: contestDescription.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            color: kPrimary,
-            child: Container(
-              padding: EdgeInsets.all(8),
-              child: Column(
+    return SafeArea(
+      child: Scaffold(
+        // appBar: AppBar(
+        //   title: Text(
+        //     widget.siteListData[0],
+        //   ),
+        //   actions: <Widget>[
+        //     IconButton(
+        //       color: _bookmarkButton ? Colors.purple : Colors.white,
+        //       icon: Icon(Icons.bookmark),
+        //       onPressed: () async {
+        //         // _updateContestList();
+        //         if (_bookmarkButton == false) {
+        //           await _updateWebsiteListAdd();
+        //           setState(() {
+        //             _bookmarkButton = !_bookmarkButton;
+        //           });
+        //         } else {
+        //           //Now as it is already saved we have to remove it from saved.
+        //           await _updateWebsiteListDel();
+        //           // print("Already saved");
+        //           setState(() {
+        //             _bookmarkButton = !_bookmarkButton;
+        //           });
+        //         }
+        //       },
+        //     ),
+        //   ],
+        // ),
+        // //main contest description views
+        body: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15),
+                  bottomRight: Radius.circular(15),
+                ),
+                color: kpurple,
+              ),
+              height: 60,
+              child: Row(
                 children: <Widget>[
-                  Text(contestDescription[index]['name']),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        contestDescription[index]['start_time'],
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0x080a0928),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
                       ),
-                      Spacer(),
-                      Text(
-                        contestDescription[index]['end_time'],
-                      ),
-                    ],
-                  ),
-                  Text(
-                    "Duration: ${contestDescription[index]['duration']}",
-                  ),
-                  Text(
-                    "In Next 24 Hours: ${contestDescription[index]['in_24_hours']}",
-                  ),
-                  Text(
-                    "Status: ${contestDescription[index]['status']}",
-                  ),
-                  OutlinedButton(
-                    onPressed: () async {
-                      var contestUpdate =
-                          await _updateContestList(contestDescription[index]);
-                      if (contestUpdate == true) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(snackBar("Not Updated"));
-                      } else {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(snackBar("Added Successfully"));
-                      }
-                      // print(contestUpdate == true);
-                    },
-                    child: Icon(
-                      Icons.favorite_border,
                     ),
                   ),
-                  OutlinedButton(
+                  Text(
+                    widget.siteListData[0],
+                    style: textStyleTitle.copyWith(color: Colors.white),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    color: _bookmarkButton ? Color(0xFFF76F02) : Colors.white,
+                    icon: Icon(Icons.bookmark),
                     onPressed: () async {
-                      final url = contestDescription[index]['url'];
-                      // final url = 'https://www.google.co.in/';
-                      if (await canLaunch(url)) {
-                        await launch(url);
+                      // _updateContestList();
+                      if (_bookmarkButton == false) {
+                        await _updateWebsiteListAdd();
+                        setState(() {
+                          _bookmarkButton = !_bookmarkButton;
+                        });
+                      } else {
+                        //Now as it is already saved we have to remove it from saved.
+                        await _updateWebsiteListDel();
+                        // print("Already saved");
+                        setState(() {
+                          _bookmarkButton = !_bookmarkButton;
+                        });
                       }
                     },
-                    child: Icon(Icons.link),
                   ),
-                  OutlinedButton(
-                      onPressed: () {
-                        //getting all values together
-                        var title = contestDescription[index]['name'];
-                        var startDate = contestDescription[index]['start_time'];
-                        var endDate = contestDescription[index]['end_time'];
-                        //changing datatype of dates
-                        startDate = DateTime.parse(startDate);
-                        endDate = DateTime.parse(endDate);
-                        print(startDate);
-                        print(endDate);
-                        AddCalendar addCalendar = AddCalendar();
-                        addCalendar.addToCalendar(title, startDate, endDate);
-                      },
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.calendar_today),
-                          SizedBox(
-                            width: 4,
-                          ),
-                          Text("Add Event to Calendar"),
-                        ],
-                      )),
                 ],
               ),
             ),
-          );
-        },
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: contestDescription.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 10.0,
+                    margin: EdgeInsets.all(8),
+                    color: Color(0xFFF5F4F9),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          // color: Color(0xFFF76F02),
+                          color: kpurple,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      padding: EdgeInsets.all(8),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            contestDescription[index]['name'],
+                            style: textStyleTitle,
+                            maxLines: 2,
+                          ),
+                          Divider(),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.av_timer,
+                                color: Color(0xFFF76F02),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "Start time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['start_time']))}",
+                                style: textStyleTitle.copyWith(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 7,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.av_timer,
+                                color: Color(0xFFF76F02),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "End time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['end_time']))}",
+                                style: textStyleTitle.copyWith(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 7,
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.timer_outlined,
+                                color: Color(0xFFF76F02),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "Duration: ${(Duration(seconds: int.parse(contestDescription[index]['duration'])).inHours).toString()} Hrs",
+                                style: textStyleTitle.copyWith(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 7,
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.priority_high_outlined,
+                                color: Color(0xFFF76F02),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "In Next 24 Hours: ${contestDescription[index]['in_24_hours']}",
+                                style: textStyleTitle.copyWith(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 7,
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.contactless_outlined,
+                                color: Color(0xFFF76F02),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "Status: ${contestDescription[index]['status']}",
+                                style: textStyleTitle.copyWith(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Spacer(),
+                              OutlinedButton(
+                                style: outlinedButtonStyle,
+                                onPressed: () async {
+                                  final url = contestDescription[index]['url'];
+                                  // final url = 'https://www.google.co.in/';
+                                  if (await canLaunch(url)) {
+                                    await launch(url);
+                                  }
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Open Website",
+                                      style: textStyleTitle.copyWith(
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 6,
+                                    ),
+                                    Icon(
+                                      Icons.link,
+                                      color: Color(0xFFF76F02),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              OutlinedButton(
+                                style: outlinedButtonStyle,
+                                onPressed: () async {
+                                  var contestUpdate = await _updateContestList(
+                                      contestDescription[index]);
+                                  if (contestUpdate == true) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar("Not Updated"));
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        snackBar("Added Successfully"));
+                                  }
+                                  // print(contestUpdate == true);
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.favorite_border,
+                                      color: Color(0xFFF76F02),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Spacer(),
+                              OutlinedButton(
+                                style: outlinedButtonStyle.copyWith(),
+                                onPressed: () {
+                                  //getting all values together
+                                  var title = contestDescription[index]['name'];
+                                  var startDate =
+                                      contestDescription[index]['start_time'];
+                                  var endDate =
+                                      contestDescription[index]['end_time'];
+                                  //changing datatype of dates
+                                  startDate = DateTime.parse(startDate);
+                                  endDate = DateTime.parse(endDate);
+                                  print(startDate);
+                                  print(endDate);
+                                  AddCalendar addCalendar = AddCalendar();
+                                  addCalendar.addToCalendar(
+                                      title, startDate, endDate);
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.calendar_today,
+                                      color: Color(0xFFF76F02),
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(
+                                      "Add Event to Calendar",
+                                      style: textStyleTitle.copyWith(
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

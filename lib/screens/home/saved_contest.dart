@@ -1,5 +1,6 @@
 import 'package:contest_app/models/user_data.dart';
 import 'package:contest_app/screens/home/home.dart';
+import 'package:contest_app/services/add_calendar.dart';
 import 'package:contest_app/services/database_service.dart';
 import 'package:contest_app/shared/constants.dart';
 import 'package:flutter/material.dart';
@@ -200,33 +201,6 @@ class _SavedContestState extends State<SavedContest> {
                       SizedBox(
                         width: 10,
                       ),
-                      OutlinedButton(
-                        style: outlinedButtonStyle,
-                        onPressed: () async {
-                          await _removeContestBookmark(userContestList[index]);
-                          _getUserContestList();
-                          // setState(() {});
-                          // initState();
-                        },
-                        child: Row(
-                          children: [
-                            Text(
-                              "Remove",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 6,
-                            ),
-                            Icon(
-                              Icons.heart_broken_outlined,
-                              color: Color(0xFFF76F02),
-                            ),
-                          ],
-                        ),
-                      ),
                       Spacer(),
                       OutlinedButton(
                         style: outlinedButtonStyle,
@@ -258,6 +232,70 @@ class _SavedContestState extends State<SavedContest> {
                       ),
                       SizedBox(
                         width: 10,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      OutlinedButton(
+                        style: outlinedButtonStyle,
+                        onPressed: () async {
+                          await _removeContestBookmark(userContestList[index]);
+                          _getUserContestList();
+                          // setState(() {});
+                          // initState();
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              "Remove",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 6,
+                            ),
+                            Icon(
+                              Icons.heart_broken_outlined,
+                              color: Color(0xFFF76F02),
+                            ),
+                          ],
+                        ),
+                      ),
+                      OutlinedButton(
+                        style: outlinedButtonStyle.copyWith(),
+                        onPressed: () {
+                          //getting all values together
+                          var title = userContestList[index]['name'];
+                          var startDate = userContestList[index]['start_time'];
+                          var endDate = userContestList[index]['end_time'];
+                          //changing datatype of dates
+                          startDate = DateTime.parse(startDate);
+                          endDate = DateTime.parse(endDate);
+                          // print(startDate);
+                          // print(endDate);
+                          AddCalendar addCalendar = AddCalendar();
+                          addCalendar.addToCalendar(title, startDate, endDate);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.calendar_today,
+                              color: Color(0xFFF76F02),
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              "Add Event to Calendar",
+                              style: textStyleTitle.copyWith(
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
