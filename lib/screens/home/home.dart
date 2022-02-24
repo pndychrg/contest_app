@@ -114,7 +114,7 @@ class _HomeState extends State<Home> {
                   borderSide: BorderSide(color: Color(0xFFF76F02), width: 2.0),
                   insets: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 70.0),
                 ),
-                labelColor: Colors.red,
+                labelColor: Colors.greenAccent,
                 unselectedLabelColor: Colors.white,
                 tabs: [
                   Tab(
