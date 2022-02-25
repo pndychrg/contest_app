@@ -6,6 +6,7 @@ import 'package:contest_app/models/website.dart';
 import 'package:contest_app/services/add_calendar.dart';
 import 'package:contest_app/services/database_service.dart';
 import 'package:contest_app/shared/constants.dart';
+import 'package:contest_app/shared/empty_list.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -26,6 +27,7 @@ class WebsiteScreen extends StatefulWidget {
 class _WebsiteScreenState extends State<WebsiteScreen> {
   // list of contests of the sites
   List contestDescription = [];
+  bool contestDescriptionIsEmpty = false;
   Future<void> _getContestList() async {
     var url = "https://kontests.net/api/v1/" + widget.siteListData[1];
     final response = await http.get(Uri.parse(url));
@@ -34,6 +36,11 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
     setState(() {
       contestDescription = data;
     });
+    if (contestDescription.isEmpty) {
+      setState(() {
+        contestDescriptionIsEmpty = true;
+      });
+    }
   }
 
   //mapping the websiteListData to a Map of String,dynamic
@@ -286,275 +293,284 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
             SizedBox(
               height: 10,
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: contestDescription.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 10.0,
-                    margin: EdgeInsets.all(8),
-                    color: MediaQuery.of(context).platformBrightness ==
-                            Brightness.light
-                        ? Color(0xFFF5F4F9)
-                        : Color(0xFF082032),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          // color: Color(0xFFF76F02),
-                          color: kpurple,
-                          width: 2,
-                        ),
+            if (contestDescriptionIsEmpty) ...[
+              EmptyListShow(),
+            ] else ...[
+              Expanded(
+                child: ListView.builder(
+                  itemCount: contestDescription.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            contestDescription[index]['name'],
-                            style: textStyleTitle,
-                            maxLines: 2,
+                      elevation: 10.0,
+                      margin: EdgeInsets.all(8),
+                      color: MediaQuery.of(context).platformBrightness ==
+                              Brightness.light
+                          ? Color(0xFFF5F4F9)
+                          : Color(0xFF082032),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            // color: Color(0xFFF76F02),
+                            color: kpurple,
+                            width: 2,
                           ),
-                          Divider(),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.av_timer,
-                                color: Color(0xFFF76F02),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "Start time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['start_time'].toString().replaceAll(" UTC", '')))}",
-                                style: textStyleTitle.copyWith(
-                                  fontSize: 20,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              contestDescription[index]['name'],
+                              style: textStyleTitle,
+                              maxLines: 2,
+                            ),
+                            Divider(),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.av_timer,
+                                  color: Color(0xFFF76F02),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 7,
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.av_timer,
-                                color: Color(0xFFF76F02),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "End time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['end_time'].toString().replaceAll(" UTC", '')))}",
-                                style: textStyleTitle.copyWith(
-                                  fontSize: 20,
+                                SizedBox(
+                                  width: 5,
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 7,
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.timer_outlined,
-                                color: Color(0xFFF76F02),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                // "Duration: ${(Duration(seconds: int.parse(contestDescription[index]['duration'])).inHours).toString()} Hrs",
-                                "Duration: ${contestDescription[index]['duration']} seconds",
-                                style: textStyleTitle.copyWith(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.priority_high_outlined,
-                                color: Color(0xFFF76F02),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "In Next 24 Hours: ${contestDescription[index]['in_24_hours']}",
-                                style: textStyleTitle.copyWith(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 7,
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.contactless_outlined,
-                                color: Color(0xFFF76F02),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "Status: ${contestDescription[index]['status']}",
-                                style: textStyleTitle.copyWith(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Spacer(),
-                              OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  elevation: 3,
-                                  // backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                                Text(
+                                  "Start time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['start_time'].toString().replaceAll(" UTC", '')))}",
+                                  style: textStyleTitle.copyWith(
+                                    fontSize: 20,
                                   ),
-                                  backgroundColor: MediaQuery.of(context)
-                                              .platformBrightness ==
-                                          Brightness.light
-                                      ? Colors.white
-                                      : Colors.transparent,
                                 ),
-                                onPressed: () async {
-                                  final url = contestDescription[index]['url'];
-                                  // final url = 'https://www.google.co.in/';
-                                  if (await canLaunch(url)) {
-                                    await launch(url);
-                                  }
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Open Website",
-                                      style: textStyleTitle.copyWith(
-                                        fontSize: 17,
+                              ],
+                            ),
+                            SizedBox(
+                              height: 7,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.av_timer,
+                                  color: Color(0xFFF76F02),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "End time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['end_time'].toString().replaceAll(" UTC", '')))}",
+                                  style: textStyleTitle.copyWith(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 7,
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.timer_outlined,
+                                  color: Color(0xFFF76F02),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  // "Duration: ${(Duration(seconds: int.parse(contestDescription[index]['duration'])).inHours).toString()} Hrs",
+                                  "Duration: ${contestDescription[index]['duration']} seconds",
+                                  style: textStyleTitle.copyWith(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.priority_high_outlined,
+                                  color: Color(0xFFF76F02),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "In Next 24 Hours: ${contestDescription[index]['in_24_hours']}",
+                                  style: textStyleTitle.copyWith(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 7,
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.contactless_outlined,
+                                  color: Color(0xFFF76F02),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "Status: ${contestDescription[index]['status']}",
+                                  style: textStyleTitle.copyWith(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Spacer(),
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    elevation: 3,
+                                    // backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    backgroundColor: MediaQuery.of(context)
+                                                .platformBrightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.transparent,
+                                  ),
+                                  onPressed: () async {
+                                    final url =
+                                        contestDescription[index]['url'];
+                                    // final url = 'https://www.google.co.in/';
+                                    if (await canLaunch(url)) {
+                                      await launch(url);
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Open Website",
+                                        style: textStyleTitle.copyWith(
+                                          fontSize: 17,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 6,
-                                    ),
-                                    Icon(
-                                      Icons.link,
-                                      color: Color(0xFFF76F02),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  elevation: 3,
-                                  // backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  backgroundColor: MediaQuery.of(context)
-                                              .platformBrightness ==
-                                          Brightness.light
-                                      ? Colors.white
-                                      : Colors.transparent,
-                                ),
-                                onPressed: () async {
-                                  var contestUpdate = await _updateContestList(
-                                      contestDescription[index]);
-                                  if (contestUpdate == true) {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar("Not Updated"));
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        snackBar("Added Successfully"));
-                                  }
-                                  // print(contestUpdate == true);
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.favorite_border,
-                                      color: Color(0xFFF76F02),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Spacer(),
-                              OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  elevation: 3,
-                                  // backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  backgroundColor: MediaQuery.of(context)
-                                              .platformBrightness ==
-                                          Brightness.light
-                                      ? Colors.white
-                                      : Colors.transparent,
-                                ),
-                                onPressed: () {
-                                  //getting all values together
-                                  var title = contestDescription[index]['name'];
-                                  var startDate =
-                                      contestDescription[index]['start_time'];
-                                  var endDate =
-                                      contestDescription[index]['end_time'];
-                                  //changing datatype of dates
-                                  startDate = DateTime.parse(startDate);
-                                  endDate = DateTime.parse(endDate);
-                                  print(startDate);
-                                  print(endDate);
-                                  AddCalendar addCalendar = AddCalendar();
-                                  addCalendar.addToCalendar(
-                                      title, startDate, endDate);
-                                },
-                                child: Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.calendar_today,
-                                      color: Color(0xFFF76F02),
-                                    ),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Text(
-                                      "Add Event to Calendar",
-                                      style: textStyleTitle.copyWith(
-                                        fontSize: 17,
+                                      SizedBox(
+                                        width: 6,
                                       ),
-                                    ),
-                                  ],
+                                      Icon(
+                                        Icons.link,
+                                        color: Color(0xFFF76F02),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                SizedBox(
+                                  width: 10,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    elevation: 3,
+                                    // backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    backgroundColor: MediaQuery.of(context)
+                                                .platformBrightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.transparent,
+                                  ),
+                                  onPressed: () async {
+                                    var contestUpdate =
+                                        await _updateContestList(
+                                            contestDescription[index]);
+                                    if (contestUpdate == true) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                              snackBar("Not Updated"));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                              snackBar("Added Successfully"));
+                                    }
+                                    // print(contestUpdate == true);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.favorite_border,
+                                        color: Color(0xFFF76F02),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Spacer(),
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    elevation: 3,
+                                    // backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    backgroundColor: MediaQuery.of(context)
+                                                .platformBrightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.transparent,
+                                  ),
+                                  onPressed: () {
+                                    //getting all values together
+                                    var title =
+                                        contestDescription[index]['name'];
+                                    var startDate =
+                                        contestDescription[index]['start_time'];
+                                    var endDate =
+                                        contestDescription[index]['end_time'];
+                                    //changing datatype of dates
+                                    startDate = DateTime.parse(startDate);
+                                    endDate = DateTime.parse(endDate);
+                                    print(startDate);
+                                    print(endDate);
+                                    AddCalendar addCalendar = AddCalendar();
+                                    addCalendar.addToCalendar(
+                                        title, startDate, endDate);
+                                  },
+                                  child: Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.calendar_today,
+                                        color: Color(0xFFF76F02),
+                                      ),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
+                                      Text(
+                                        "Add Event to Calendar",
+                                        style: textStyleTitle.copyWith(
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
+            ]
           ],
         ),
       ),
