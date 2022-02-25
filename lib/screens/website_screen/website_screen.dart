@@ -328,7 +328,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                                 width: 5,
                               ),
                               Text(
-                                "Start time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['start_time']))}",
+                                "Start time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['start_time'].toString().replaceAll(" UTC", '')))}",
                                 style: textStyleTitle.copyWith(
                                   fontSize: 20,
                                 ),
@@ -348,7 +348,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                                 width: 5,
                               ),
                               Text(
-                                "End time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['end_time']))}",
+                                "End time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(contestDescription[index]['end_time'].toString().replaceAll(" UTC", '')))}",
                                 style: textStyleTitle.copyWith(
                                   fontSize: 20,
                                 ),
@@ -368,7 +368,8 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                                 width: 5,
                               ),
                               Text(
-                                "Duration: ${(Duration(seconds: int.parse((contestDescription[index]['duration']).trim())).inHours).toString()} Hrs",
+                                // "Duration: ${(Duration(seconds: int.parse(contestDescription[index]['duration'])).inHours).toString()} Hrs",
+                                "Duration: ${contestDescription[index]['duration']} seconds",
                                 style: textStyleTitle.copyWith(
                                   fontSize: 20,
                                 ),
@@ -376,7 +377,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                             ],
                           ),
                           SizedBox(
-                            width: 7,
+                            width: 10,
                           ),
                           Row(
                             children: [
