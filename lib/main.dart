@@ -32,32 +32,20 @@ class MyApp extends StatelessWidget {
       // ),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaleFactor: 1.0,
+            ),
+            child: child ?? Text("Error"),
+          );
+        },
+        title: "Contests App",
         darkTheme: darkThemeData(context),
         theme: ligthThemeData(context),
-        builder: ((context, child) {
-          return Overlay(
-            initialEntries: [
-              OverlayEntry(builder: (context) {
-                return MediaQuery(
-                  child: Wrapper(
-                    user: AuthService().user,
-                  ),
-                  data: MediaQuery.of(context).copyWith(
-                    textScaleFactor: 1.0,
-                  ),
-                );
-              })
-            ],
-            // child: MediaQuery(
-            //   child: Wrapper(
-            //     user: AuthService().user,
-            //   ),
-            //   data: MediaQuery.of(context).copyWith(
-            //     textScaleFactor: 1.0,
-            //   ),
-            // ),
-          );
-        }),
+        home: Wrapper(
+          user: AuthService().user,
+        ),
       ),
     );
   }
