@@ -123,7 +123,7 @@ class _SavedContestState extends State<SavedContest> {
                               width: 5,
                             ),
                             Text(
-                              "Start time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(userContestList[index]['start_time']))}",
+                              "Start time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(userContestList[index]['start_time'].toString().replaceAll(" UTC", '')))}",
                               style: textStyleTitle.copyWith(
                                 fontSize: 20,
                                 color:
@@ -148,7 +148,7 @@ class _SavedContestState extends State<SavedContest> {
                               width: 5,
                             ),
                             Text(
-                              "End time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(userContestList[index]['end_time']))}",
+                              "End time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(userContestList[index]['end_time'].toString().replaceAll(" UTC", '')))}",
                               style: textStyleTitle.copyWith(
                                 fontSize: 20,
                                 color:
@@ -173,7 +173,7 @@ class _SavedContestState extends State<SavedContest> {
                               width: 5,
                             ),
                             Text(
-                              "Duration: ${(Duration(seconds: int.parse(userContestList[index]['duration'])).inHours).toString()} Hrs",
+                              "Duration: ${userContestList[index]['duration']} seconds",
                               style: textStyleTitle.copyWith(
                                 fontSize: 20,
                                 color:
