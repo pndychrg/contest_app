@@ -46,54 +46,70 @@ class _DrawerNavigationState extends State<DrawerNavigation> {
     //Getting user data from stream
     UserSnapshotData? user = Provider.of<UserSnapshotData?>(context);
     return Drawer(
-      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          bottomRight: Radius.circular(15),
+          topRight: Radius.circular(15),
+        ),
+      ),
+      elevation: 10,
       // backgroundColor: Colors.blueGrey,
-      backgroundColor: kpurple,
-      child: Column(
-        children: <Widget>[
-          //DrawerHeader
-          DrawerHeader(
-            child: Row(
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Color(0xFFF76F02),
-                  child: Text(
-                    user?.name[0] ?? "-",
-                    style: GoogleFonts.roboto(
-                      fontSize: 20,
+      backgroundColor:
+          MediaQuery.of(context).platformBrightness == Brightness.light
+              ? kpurple
+              : kdarkBlue,
+      child: SafeArea(
+        child: Column(
+          children: <Widget>[
+            //DrawerHeader
+            Container(
+              padding: EdgeInsets.all(8),
+              child: Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Color(0xFFF76F02),
+                    child: Text(
+                      user?.name[0] ?? "-",
+                      style: GoogleFonts.roboto(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    user?.name ?? "No Name",
+                    style: GoogleFonts.lato(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 30,
+                      letterSpacing: 2,
                       color: Colors.white,
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  user?.name ?? "No Name",
-                  style: GoogleFonts.lato(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 30,
-                    letterSpacing: 2,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          //List of All Websites
-          Expanded(
-            child: ListView.builder(
-              itemCount: sitesList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return SiteListCard(
-                  sitesListData: sitesList[index],
-                  user: user,
-                );
-              },
+            Divider(),
+            SizedBox(
+              height: 10,
             ),
-          ),
-        ],
+            //List of All Websites
+            Expanded(
+              child: ListView.builder(
+                itemCount: sitesList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return SiteListCard(
+                    sitesListData: sitesList[index],
+                    user: user,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

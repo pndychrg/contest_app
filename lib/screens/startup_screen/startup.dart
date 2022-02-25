@@ -34,43 +34,8 @@ class StartUP extends StatelessWidget {
         padding: EdgeInsets.only(top: 50),
         child: Column(
           children: <Widget>[
-            Container(
-              width: 350,
-              height: 75,
-              decoration: BoxDecoration(
-                color: kLightPink.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Row(
-                children: [
-                  Spacer(),
-                  SvgPicture.asset(
-                    "assets/svg/logo.svg",
-                    width: 40,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "The Contests App",
-                    style: GoogleFonts.roboto(
-                      fontSize: 30,
-                      letterSpacing: 1,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.end,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
             CarouselSlider(
-              options: CarouselOptions(height: 470.0),
+              options: CarouselOptions(height: 570.0),
               items: [1, 2, 3, 4].map((i) {
                 return Builder(
                   builder: (BuildContext context) {
@@ -84,26 +49,26 @@ class StartUP extends StatelessWidget {
                           color: MediaQuery.of(context).platformBrightness ==
                                   Brightness.light
                               ? Colors.white
-                              : Colors.black,
+                              : kdarkBlue,
                           border: Border.all(
                             color: kLightPink,
                             width: 4,
                           ),
                           borderRadius: BorderRadius.circular(15),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                              color: kLightBlue,
-                              spreadRadius: 4,
-                              blurRadius: 5,
-                            ),
-                          ],
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               carouselText[i],
-                              style: GoogleFonts.lato(fontSize: 30.0),
+                              style: GoogleFonts.lato(
+                                color:
+                                    MediaQuery.of(context).platformBrightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
+                                fontSize: 30,
+                              ),
                             ),
                             Container(
                               height: 300,

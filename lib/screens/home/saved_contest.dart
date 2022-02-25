@@ -3,6 +3,7 @@ import 'package:contest_app/screens/home/home.dart';
 import 'package:contest_app/services/add_calendar.dart';
 import 'package:contest_app/services/database_service.dart';
 import 'package:contest_app/shared/constants.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,9 @@ class _SavedContestState extends State<SavedContest> {
             ),
             elevation: 10.0,
             margin: EdgeInsets.all(8),
-            color: Color(0xFFF5F4F9),
+            color: MediaQuery.of(context).platformBrightness == Brightness.light
+                ? Color(0xFFF5F4F9)
+                : Color(0xFF082032),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
@@ -92,7 +95,13 @@ class _SavedContestState extends State<SavedContest> {
                 children: <Widget>[
                   Text(
                     userContestList[index]['name'],
-                    style: textStyleTitle,
+                    style: textStyleTitle.copyWith(
+                      color: MediaQuery.of(context).platformBrightness ==
+                              Brightness.light
+                          ? Colors.black
+                          : Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                     maxLines: 2,
                   ),
                   Divider(),
@@ -109,6 +118,10 @@ class _SavedContestState extends State<SavedContest> {
                         "Start time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(userContestList[index]['start_time']))}",
                         style: textStyleTitle.copyWith(
                           fontSize: 20,
+                          color: MediaQuery.of(context).platformBrightness ==
+                                  Brightness.light
+                              ? Colors.black
+                              : Colors.white.withOpacity(0.7),
                         ),
                       ),
                     ],
@@ -129,6 +142,10 @@ class _SavedContestState extends State<SavedContest> {
                         "End time: ${DateFormat('yyyy-MM-dd – kk:mm').format(DateTime.parse(userContestList[index]['end_time']))}",
                         style: textStyleTitle.copyWith(
                           fontSize: 20,
+                          color: MediaQuery.of(context).platformBrightness ==
+                                  Brightness.light
+                              ? Colors.black
+                              : Colors.white.withOpacity(0.8),
                         ),
                       ),
                     ],
@@ -149,6 +166,10 @@ class _SavedContestState extends State<SavedContest> {
                         "Duration: ${(Duration(seconds: int.parse(userContestList[index]['duration'])).inHours).toString()} Hrs",
                         style: textStyleTitle.copyWith(
                           fontSize: 20,
+                          color: MediaQuery.of(context).platformBrightness ==
+                                  Brightness.light
+                              ? Colors.black
+                              : Colors.white.withOpacity(0.8),
                         ),
                       ),
                     ],
@@ -169,6 +190,10 @@ class _SavedContestState extends State<SavedContest> {
                         "In Next 24 Hours: ${userContestList[index]['in_24_hours']}",
                         style: textStyleTitle.copyWith(
                           fontSize: 20,
+                          color: MediaQuery.of(context).platformBrightness ==
+                                  Brightness.light
+                              ? Colors.black
+                              : Colors.white.withOpacity(0.8),
                         ),
                       ),
                     ],
@@ -189,12 +214,16 @@ class _SavedContestState extends State<SavedContest> {
                         "Status: ${userContestList[index]['status']}",
                         style: textStyleTitle.copyWith(
                           fontSize: 20,
+                          color: MediaQuery.of(context).platformBrightness ==
+                                  Brightness.light
+                              ? Colors.black
+                              : Colors.white.withOpacity(0.8),
                         ),
                       ),
                     ],
                   ),
                   SizedBox(
-                    height: 7,
+                    height: 10,
                   ),
                   Row(
                     children: [
@@ -203,7 +232,18 @@ class _SavedContestState extends State<SavedContest> {
                       ),
                       Spacer(),
                       OutlinedButton(
-                        style: outlinedButtonStyle,
+                        style: OutlinedButton.styleFrom(
+                          elevation: 3,
+                          // backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          backgroundColor:
+                              MediaQuery.of(context).platformBrightness ==
+                                      Brightness.light
+                                  ? Colors.white
+                                  : Colors.transparent,
+                        ),
                         onPressed: () async {
                           final url = userContestList[index]['url'];
                           // final url = 'https://www.google.co.in/';
@@ -216,7 +256,11 @@ class _SavedContestState extends State<SavedContest> {
                             Text(
                               "Open Website",
                               style: TextStyle(
-                                color: Colors.black,
+                                color:
+                                    MediaQuery.of(context).platformBrightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
                                 fontSize: 17,
                               ),
                             ),
@@ -238,7 +282,18 @@ class _SavedContestState extends State<SavedContest> {
                   Row(
                     children: [
                       OutlinedButton(
-                        style: outlinedButtonStyle,
+                        style: OutlinedButton.styleFrom(
+                          elevation: 3,
+                          // backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          backgroundColor:
+                              MediaQuery.of(context).platformBrightness ==
+                                      Brightness.light
+                                  ? Colors.white
+                                  : Colors.transparent,
+                        ),
                         onPressed: () async {
                           await _removeContestBookmark(userContestList[index]);
                           _getUserContestList();
@@ -250,7 +305,11 @@ class _SavedContestState extends State<SavedContest> {
                             Text(
                               "Remove",
                               style: TextStyle(
-                                color: Colors.black,
+                                color:
+                                    MediaQuery.of(context).platformBrightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
                                 fontSize: 17,
                               ),
                             ),
@@ -265,7 +324,18 @@ class _SavedContestState extends State<SavedContest> {
                         ),
                       ),
                       OutlinedButton(
-                        style: outlinedButtonStyle.copyWith(),
+                        style: OutlinedButton.styleFrom(
+                          elevation: 3,
+                          // backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          backgroundColor:
+                              MediaQuery.of(context).platformBrightness ==
+                                      Brightness.light
+                                  ? Colors.white
+                                  : Colors.transparent,
+                        ),
                         onPressed: () {
                           //getting all values together
                           var title = userContestList[index]['name'];
@@ -292,6 +362,11 @@ class _SavedContestState extends State<SavedContest> {
                               "Add Event to Calendar",
                               style: textStyleTitle.copyWith(
                                 fontSize: 17,
+                                color:
+                                    MediaQuery.of(context).platformBrightness ==
+                                            Brightness.light
+                                        ? Colors.black
+                                        : Colors.white,
                               ),
                             ),
                           ],

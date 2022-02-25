@@ -53,7 +53,9 @@ class _WebsiteBookmarkState extends State<WebsiteBookmark> {
           ),
           margin: EdgeInsets.all(8),
           elevation: 10,
-          color: Color(0xFFF5F4F9),
+          color: MediaQuery.of(context).platformBrightness == Brightness.light
+              ? Color(0xFFF5F4F9)
+              : Color(0xFF082032),
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
@@ -97,7 +99,18 @@ class _WebsiteBookmarkState extends State<WebsiteBookmark> {
                   children: <Widget>[
                     // Spacer(),
                     OutlinedButton(
-                      style: outlinedButtonStyle,
+                      style: OutlinedButton.styleFrom(
+                        elevation: 3,
+                        // backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        backgroundColor:
+                            MediaQuery.of(context).platformBrightness ==
+                                    Brightness.light
+                                ? Colors.white
+                                : Colors.transparent,
+                      ),
                       onPressed: () {
                         //changing the websiteList Map into a list
                         var siteListData = [];
@@ -122,7 +135,11 @@ class _WebsiteBookmarkState extends State<WebsiteBookmark> {
                           Text(
                             "Open Contests Page",
                             style: TextStyle(
-                              color: Colors.black,
+                              color:
+                                  MediaQuery.of(context).platformBrightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                               fontSize: 15,
                             ),
                           ),
@@ -140,7 +157,18 @@ class _WebsiteBookmarkState extends State<WebsiteBookmark> {
                       width: 4,
                     ),
                     OutlinedButton(
-                      style: outlinedButtonStyle,
+                      style: OutlinedButton.styleFrom(
+                        elevation: 3,
+                        // backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        backgroundColor:
+                            MediaQuery.of(context).platformBrightness ==
+                                    Brightness.light
+                                ? Colors.white
+                                : Colors.transparent,
+                      ),
                       onPressed: () async {
                         final url = user?.websitesList[index]['website_url'];
                         if (await canLaunch(url)) {
@@ -153,7 +181,12 @@ class _WebsiteBookmarkState extends State<WebsiteBookmark> {
                             "Open Website",
                             style: TextStyle(
                               fontSize: 15,
-                              color: Colors.black,
+                              // color: Colors.black,
+                              color:
+                                  MediaQuery.of(context).platformBrightness ==
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                             ),
                           ),
                           SizedBox(

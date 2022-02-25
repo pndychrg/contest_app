@@ -14,6 +14,9 @@ ThemeData ligthThemeData(BuildContext context) {
 
 ThemeData darkThemeData(BuildContext context) {
   return ThemeData.dark().copyWith(
-    scaffoldBackgroundColor: Color.fromARGB(255, 18, 18, 18),
+    scaffoldBackgroundColor: kdarkBlue,
+    appBarTheme: AppBarTheme().copyWith(
+      backgroundColor: kpurple.withOpacity(0.5),
+    ),
   );
 }

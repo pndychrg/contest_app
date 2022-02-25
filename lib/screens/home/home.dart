@@ -37,103 +37,75 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserData?>(context);
-    final _advancedDrawerController = AdvancedDrawerController();
-    void _handleMenuButtonPressed() {
-      // NOTICE: Manage Advanced Drawer state through the Controller.
-      _advancedDrawerController.value = AdvancedDrawerValue.visible();
-      _advancedDrawerController.showDrawer();
-    }
 
     return StreamProvider<UserSnapshotData?>.value(
       initialData: null,
       value: DatabaseService(uid: user!.uid).user_data,
       child: DefaultTabController(
         length: 2,
-        child: AdvancedDrawer(
-          // backdropColor: Colors.blueGrey,
-          backdropColor: kpurple,
-          controller: _advancedDrawerController,
-          animationCurve: Curves.easeInOut,
-          animationDuration: const Duration(milliseconds: 300),
-          animateChildDecoration: true,
-          rtlOpening: false,
-          disabledGestures: false,
-          childDecoration: const BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(16),
-            ),
-          ),
+        child: Scaffold(
           drawer: DrawerNavigation(),
-          child: Scaffold(
-            drawerEnableOpenDragGesture: false,
-            appBar: AppBar(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(30),
-                ),
+          appBar: AppBar(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(30),
               ),
-              title: Text("ContestAPP | Home"),
-              elevation: 0.0,
-              leading: IconButton(
-                onPressed: _handleMenuButtonPressed,
-                icon: ValueListenableBuilder<AdvancedDrawerValue>(
-                  valueListenable: _advancedDrawerController,
-                  builder: (_, value, __) {
-                    return AnimatedSwitcher(
-                      duration: Duration(milliseconds: 250),
-                      child: Icon(value.visible ? Icons.clear : Icons.menu),
-                      key: ValueKey<bool>(value.visible),
-                    );
-                  },
+            ),
+            title: Text("ContestAPP | Home"),
+            elevation: 0.0,
+            actions: <Widget>[
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  // primary: kpurple,
+                  primary: MediaQuery.of(context).platformBrightness ==
+                          Brightness.light
+                      ? kpurple
+                      : kpurple.withOpacity(0.5),
+                  side: BorderSide.none,
                 ),
+                onPressed: () async {
+                  await _auth.signOut();
+                },
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.exit_to_app, color: Colors.white),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      "Sign Out",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+            bottom: TabBar(
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(color: Color(0xFFF76F02), width: 2.0),
+                insets: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 70.0),
               ),
-              actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    primary: kpurple,
+              labelColor: Colors.greenAccent,
+              unselectedLabelColor: Colors.white,
+              tabs: [
+                Tab(
+                  icon: Icon(
+                    Icons.bookmark,
                   ),
-                  onPressed: () async {
-                    await _auth.signOut();
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.exit_to_app),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        "Sign Out",
-                      ),
-                    ],
+                  text: "Bookmarked Website",
+                ),
+                Tab(
+                  icon: Icon(
+                    Icons.favorite,
                   ),
+                  text: "Saved Contests",
                 )
               ],
-              bottom: TabBar(
-                indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(color: Color(0xFFF76F02), width: 2.0),
-                  insets: EdgeInsets.fromLTRB(50.0, 0.0, 50.0, 70.0),
-                ),
-                labelColor: Colors.greenAccent,
-                unselectedLabelColor: Colors.white,
-                tabs: [
-                  Tab(
-                    icon: Icon(
-                      Icons.bookmark,
-                    ),
-                    text: "Bookmarked Website",
-                  ),
-                  Tab(
-                    icon: Icon(
-                      Icons.favorite,
-                    ),
-                    text: "Saved Contests",
-                  )
-                ],
-              ),
             ),
-            body: HomeTabView(user: user),
           ),
+          body: HomeTabView(user: user),
         ),
       ),
     );

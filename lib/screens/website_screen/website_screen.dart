@@ -232,9 +232,12 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                   bottomLeft: Radius.circular(15),
                   bottomRight: Radius.circular(15),
                 ),
-                color: kpurple,
+                color: MediaQuery.of(context).platformBrightness ==
+                        Brightness.light
+                    ? kpurple
+                    : kpurple.withOpacity(0.5),
               ),
-              height: 60,
+              height: 70,
               child: Row(
                 children: <Widget>[
                   Container(
@@ -293,7 +296,10 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                     ),
                     elevation: 10.0,
                     margin: EdgeInsets.all(8),
-                    color: Color(0xFFF5F4F9),
+                    color: MediaQuery.of(context).platformBrightness ==
+                            Brightness.light
+                        ? Color(0xFFF5F4F9)
+                        : Color(0xFF082032),
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -362,7 +368,7 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                                 width: 5,
                               ),
                               Text(
-                                "Duration: ${(Duration(seconds: int.parse(contestDescription[index]['duration'])).inHours).toString()} Hrs",
+                                "Duration: ${(Duration(seconds: int.parse((contestDescription[index]['duration']).trim())).inHours).toString()} Hrs",
                                 style: textStyleTitle.copyWith(
                                   fontSize: 20,
                                 ),
@@ -413,7 +419,18 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                             children: [
                               Spacer(),
                               OutlinedButton(
-                                style: outlinedButtonStyle,
+                                style: OutlinedButton.styleFrom(
+                                  elevation: 3,
+                                  // backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  backgroundColor: MediaQuery.of(context)
+                                              .platformBrightness ==
+                                          Brightness.light
+                                      ? Colors.white
+                                      : Colors.transparent,
+                                ),
                                 onPressed: () async {
                                   final url = contestDescription[index]['url'];
                                   // final url = 'https://www.google.co.in/';
@@ -447,7 +464,18 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                           Row(
                             children: [
                               OutlinedButton(
-                                style: outlinedButtonStyle,
+                                style: OutlinedButton.styleFrom(
+                                  elevation: 3,
+                                  // backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  backgroundColor: MediaQuery.of(context)
+                                              .platformBrightness ==
+                                          Brightness.light
+                                      ? Colors.white
+                                      : Colors.transparent,
+                                ),
                                 onPressed: () async {
                                   var contestUpdate = await _updateContestList(
                                       contestDescription[index]);
@@ -471,7 +499,18 @@ class _WebsiteScreenState extends State<WebsiteScreen> {
                               ),
                               Spacer(),
                               OutlinedButton(
-                                style: outlinedButtonStyle.copyWith(),
+                                style: OutlinedButton.styleFrom(
+                                  elevation: 3,
+                                  // backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  backgroundColor: MediaQuery.of(context)
+                                              .platformBrightness ==
+                                          Brightness.light
+                                      ? Colors.white
+                                      : Colors.transparent,
+                                ),
                                 onPressed: () {
                                   //getting all values together
                                   var title = contestDescription[index]['name'];
