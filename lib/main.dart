@@ -22,13 +22,42 @@ class MyApp extends StatelessWidget {
     return StreamProvider<UserData?>.value(
       value: AuthService().user,
       initialData: null,
+      // child: MaterialApp(
+      //   debugShowCheckedModeBanner: false,
+      //   home: Wrapper(
+      //     user: AuthService().user,
+      //   ),
+      //   darkTheme: darkThemeData(context),
+      //   theme: ligthThemeData(context),
+      // ),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Wrapper(
-          user: AuthService().user,
-        ),
         darkTheme: darkThemeData(context),
         theme: ligthThemeData(context),
+        builder: ((context, child) {
+          return Overlay(
+            initialEntries: [
+              OverlayEntry(builder: (context) {
+                return MediaQuery(
+                  child: Wrapper(
+                    user: AuthService().user,
+                  ),
+                  data: MediaQuery.of(context).copyWith(
+                    textScaleFactor: 1.0,
+                  ),
+                );
+              })
+            ],
+            // child: MediaQuery(
+            //   child: Wrapper(
+            //     user: AuthService().user,
+            //   ),
+            //   data: MediaQuery.of(context).copyWith(
+            //     textScaleFactor: 1.0,
+            //   ),
+            // ),
+          );
+        }),
       ),
     );
   }
